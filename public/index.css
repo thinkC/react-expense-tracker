@@ -1,0 +1,33 @@
+.card1{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  /* width: 100%; */
+  width: 300px;
+  
+}
+
+.card1:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.container1 {
+  padding: 2px 30px;
+}
+/* .top{
+  background-color: chartreuse;
+} */
+
+.expense-list{
+  margin:20px;
+}
+.expense-list ul{
+  padding :0;
+  list-style-type: none;
+}
+.expense-list li{
+  background: darkgray;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+  color: white;
+}
