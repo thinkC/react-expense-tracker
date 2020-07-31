@@ -51,7 +51,7 @@ export default class ExpenseForm extends Component {
                                     value={this.state.amount} />
                             </div>
 
-                            <button type="submit" className="btn btn-primary">Add Transaction</button>
+                            <button type="submit" className="btn btn-primary btn-lg">Add Transaction</button>
                         </form>
 
                     })}
