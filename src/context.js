@@ -10,16 +10,21 @@ class ExpenseProvider extends Component {
         id: '',
         text: '',
         amount: '',
+        updateOnEdit: []
     }
 
+    //summ all expenses
     addExpenses = (arr) => {
+        console.log(arr)
         const total = arr.reduce((acc, curr) => {
+            console.log(curr.amount)
             return acc += parseInt(curr.amount)
         }, 0)
         //console.log(total)
         return total
     }
 
+    //add new expense
     addNewExpense = (expense) => {
         expense.id = v4()
         let tempExpenses = [...this.state.expenses, expense];
@@ -34,33 +39,73 @@ class ExpenseProvider extends Component {
 
     }
 
-    submitNewExpense = (e, expense) => {
+    //submit new expense
+    submitNewExpense = (e, expense, id) => {
         e.preventDefault();
         this.addNewExpense(expense);
         this.setState({
             text: '',
             amount: ''
         })
+
+
         console.log(this.state)
     }
 
-    updateAddExpense = (e, value) => {
-        if (value === 'text') {
+    updateAddAndEditExpense = (e, value1) => {
+        if (value1 === 'text') {
             this.state.text = e.target.value
-            console.log(this.state.text)
+            //console.log(this.state.text)
         }
-        if (value === 'amount') {
+
+        if (value1 === 'amount') {
             this.state.amount = e.target.value
         }
-        console.log(this.state)
+
+        const tempArr = [
+            this.state.id,
+            this.state.text,
+            this.state.amount
+        ];
+
+
+
+        console.log(tempArr)
+        this.setState({
+            //updateOnEdit: this.convertAmountStringInArrayToNum(tempArr)
+            updateOnEdit: tempArr
+        })
+        //console.log(tempArr)
     }
 
+
+    // convertAmountStringInArrayToNum = (arr) => {
+    //     let newArr = [];
+
+    //     arr.forEach(item => {
+    //         if (arr.indexOf(item) === 1) {
+    //             newArr.push(item)
+    //         }
+    //         else if (arr.indexOf(item) === 2) {
+    //             newArr.push(parseInt(item))
+    //         } else {
+    //             newArr.push(item)
+    //         }
+    //     });
+    //     console.log(newArr)
+    //     return newArr;
+    // }
     expenseArrayPositive = (arr) => {
 
+        //get amount into an array
         let amountArr = arr.map(element => element.amount);
+        console.log(amountArr);
+        amountArr = this.removeExtra(amountArr)
+        console.log(amountArr)
         let convertArrItemsToNum = amountArr.map((x) => {
             return parseInt(x, 10)
         })
+        console.log(convertArrItemsToNum)
         //console.log(amountArr);
         let positiveArr = this.checkPositiveExpenseType(convertArrItemsToNum);
         //console.log(positiveArr)
@@ -73,20 +118,21 @@ class ExpenseProvider extends Component {
             return parseInt(x, 10)
         })
 
-        console.log(amountArr);
+        //console.log(amountArr);
         let negativeArr = this.checkNegativeExpenseType(convertArrItemsToNum);
-        console.log(negativeArr)
+        //console.log(negativeArr)
         return negativeArr
     }
 
     checkPositiveExpenseType = (arr) => {
+        console.log(arr)
         let income = [];
         for (let i = 0; i < arr.length; i++) {
             if ((Math.sign(arr[i]) !== -1)) {
                 income.push(arr[i])
             }
         }
-        //console.log(income);
+        console.log(income);
         return income.reduce((acc, curr) => {
             return acc += curr
         }, 0)
@@ -100,7 +146,7 @@ class ExpenseProvider extends Component {
                 expense.push(arr[i])
             }
         }
-        console.log(expense);
+        //console.log(expense);
         return expense.reduce((acc, curr) => {
             return acc += curr
         }, 0)
@@ -116,8 +162,30 @@ class ExpenseProvider extends Component {
     //     })
     // }
 
+
+    getExpense = (id) => {
+        let tempExpenses = [...this.state.expenses];
+        let OneExpense = tempExpenses.find(expense => expense.id === id)
+        //console.log(OneExpense)
+        return OneExpense
+
+    }
+
+    getAndEditChosenExpense = (id) => {
+        let tempExpenses = [...this.state.expenses];
+        let index = tempExpenses.indexOf(this.getExpense(id))
+        //console.log(index);
+        let chosenExpense = tempExpenses[index]
+        console.log(chosenExpense);
+        this.setState({
+            id: chosenExpense['id'],
+            text: chosenExpense['text'],
+            amount: chosenExpense['amount']
+        });
+        //console.log(this.state)
+    }
+
     removeExpense = (id) => {
-        console.log('ok')
         let tempExpenses = [...this.state.expenses];
         tempExpenses = tempExpenses.filter((expense) => expense.id !== id)
 
@@ -126,6 +194,57 @@ class ExpenseProvider extends Component {
                 expenses: tempExpenses
             }
         })
+    };
+
+    convertTextToNum = (str) => {
+        return parseInt(str);
+    }
+
+    onEditSave = (id) => {
+
+        if (id !== null) {
+            const expensesToSave = this.state.expenses;
+            const index = expensesToSave.indexOf(this.getExpense(id));
+            //console.log(expensesToSave)
+            const expenseRecord = expensesToSave[index];
+            expenseRecord['text'] = this.state.updateOnEdit[1];
+            expenseRecord['amount'] = this.state.updateOnEdit[2];
+            //expenseRecord['amount'] = this.state.updateOnEdit[this.convertTextToNum(2)];
+            this.setState({
+                expenses: [...this.state.expenses],
+                id: '',
+                text: '',
+                amount: ''
+            })
+            console.log(this.state.expenses)
+
+        }
+
+    }
+
+    removeExtra = (arr) => {
+        let arr1 = arr.pop();
+        console.log(arr)
+        return arr;
+
+    }
+
+    checkArrWithEmptyValue = (arr) => {
+        arr.map((item) => {
+            console.log(item.text)
+            if (item.text === '') {
+                //console.log(item.text)
+                return true
+            } else {
+                return false
+            }
+        })
+    }
+
+    check = (arr, id) => {
+        if (this.checkArrWithEmptyValue(arr)) {
+            this.removeExtra(arr)
+        }
     }
 
     render() {
@@ -134,11 +253,14 @@ class ExpenseProvider extends Component {
                 ...this.state,
                 addExpenses: this.addExpenses,
                 addNewExpense: this.addNewExpense,
-                updateAddExpense: this.updateAddExpense,
+                updateAddAndEditExpense: this.updateAddAndEditExpense,
                 submitNewExpense: this.submitNewExpense,
                 expenseArrayPositive: this.expenseArrayPositive,
                 expenseArrayNegative: this.expenseArrayNegative,
-                removeExpense: this.removeExpense
+                removeExpense: this.removeExpense,
+                getAndEditChosenExpense: this.getAndEditChosenExpense,
+                onEditSave: this.onEditSave,
+                removeExtra: this.removeExtra
 
             }}>
                 {this.props.children}

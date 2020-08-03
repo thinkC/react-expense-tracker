@@ -13,7 +13,7 @@ export default class Top extends Component {
                         <h2>YOUR BALANCE</h2>
                         <ExpenseConsumer>
                             {(value) => {
-                                console.log(value)
+                                //console.log(value)
                                 return (
                                     <h2> <span>${value.addExpenses(value.expenses)}:00</span></h2>
 
@@ -34,7 +34,7 @@ export default class Top extends Component {
                                         <ExpenseConsumer>
                                             {(value) => {
                                                 //console.log(value.expenseArrayPositive)
-                                                console.log(value)
+                                                //console.log(value)
 
                                                 // const iterateArr = (item, index, arr) => {
                                                 //     arr.forEach((item) => {

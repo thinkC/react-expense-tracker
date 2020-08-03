@@ -7,7 +7,9 @@ export default class ExpenseItems extends Component {
         return (
             <ExpenseConsumer>
                 {(value) => {
-                    console.log(value)
+                    //console.log(value)
+                    //console.log(value.expenses)
+
                     return (
                         <div>
                             <li className="item">
@@ -16,7 +18,7 @@ export default class ExpenseItems extends Component {
                                     <span className="amount">{amount}</span>
                                 </div>
                                 <div>
-                                    <button className="edit-btn" aria-label="edit button">
+                                    <button onClick={() => { value.getAndEditChosenExpense(id) }} className="edit-btn" aria-label="edit button">
                                         <span><i className="fas fa-pen"  ></i></span>
                                     </button>
                                     <button onClick={() => { value.removeExpense(id) }} className="clear-btn" aria-label="delete button">
