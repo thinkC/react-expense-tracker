@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ExpenseConsumer } from '../context';
+import Chart from './Chart';
 
 
 export default class Top extends Component {
@@ -13,7 +14,7 @@ export default class Top extends Component {
                         <h2>YOUR BALANCE</h2>
                         <ExpenseConsumer>
                             {(value) => {
-                                //console.log(value)
+                                console.log(value.expenses)
                                 return (
                                     <h2> <span>${value.addExpenses(value.expenses)}:00</span></h2>
 
@@ -22,7 +23,6 @@ export default class Top extends Component {
 
                         </ExpenseConsumer>
                     </div>
-
 
                 </div>
                 <div className="row">
@@ -77,6 +77,10 @@ export default class Top extends Component {
 
 
                         </div>
+                    </div>
+
+                    <div className="col-md-6 mx-auto col-lg-6">
+                        <Chart />
                     </div>
 
 

@@ -5,12 +5,57 @@ import { v4 } from 'uuid'
 const ExpenseContext = createContext();
 
 class ExpenseProvider extends Component {
+    // state = {
+    //     expenses: expenseDB,
+    //     id: '',
+    //     text: '',
+    //     amount: '',
+    //     updateOnEdit: []
+    // }
     state = {
         expenses: expenseDB,
         id: '',
         text: '',
         amount: '',
-        updateOnEdit: []
+        updateOnEdit: [],
+        chartData: {},
+        newItemAdded: [],
+        itemAdded: {
+            status: false
+        }
+
+    }
+    componentWillMount() {
+        this.getChartData()
+    }
+
+    getChartData = () => {
+        this.setState({
+            chartData: {
+                //labels: ['Groceries', 'Savings', 'Shoe', 'Gift'],
+                //labels: this.getChartText(this.state.expenses),
+                labels: this.getChartText(this.state.expenses, this.state.newItemAdded),
+                datasets: [
+                    {
+                        label: 'Test',
+                        // data: [
+                        //     20,
+                        //     100,
+                        //     30,
+                        //     60
+                        // ],
+                        data: this.getChartAmount(this.state.expenses),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)'
+                        ]
+                    }
+                ],
+
+            }
+        })
     }
 
     //summ all expenses
@@ -28,28 +73,49 @@ class ExpenseProvider extends Component {
     addNewExpense = (expense) => {
         expense.id = v4()
         let tempExpenses = [...this.state.expenses, expense];
-        //console.log(tempExpenses)
+        console.log(tempExpenses)
 
-        this.setState(() => {
-            return {
-                expenses: tempExpenses
-            }
+        // this.setState(() => {
+        //     return {
+        //         expenses: tempExpenses
+        //     }
+        // })
+
+        this.setState({
+            expenses: tempExpenses
         })
-        //console.log(this.state)
-
+        console.log(this.state.expenses)
+        return tempExpenses;
     }
 
     //submit new expense
     submitNewExpense = (e, expense, id) => {
         e.preventDefault();
-        this.addNewExpense(expense);
+        let newState = this.addNewExpense(expense);
+        console.log(newState)
+
         this.setState({
             text: '',
-            amount: ''
+            amount: '',
+            newItemAdded: newState
+
+
+        }, () => {
+            this.setState({
+                itemAdded: true
+            })
         })
 
+        // let new1 = this.state.itemAdded
+        // new1.status = true
+        // this.setState({
+        //     new1: new1,
+        //     newItemAdded: newState
+        // })
 
-        console.log(this.state)
+        // console.log(this.state.itemAdded)
+        // console.log(this.state.newItemAdded)
+        return newState
     }
 
     updateAddAndEditExpense = (e, value1) => {
@@ -247,6 +313,42 @@ class ExpenseProvider extends Component {
         }
     }
 
+    getChartAmount = (arr) => {
+        let amount = arr.map((item) => item.amount);
+        console.log(amount)
+        return amount;
+    }
+
+    getChartText = (arr) => {
+        let text = arr.map((item) => item.text);
+        console.log(text)
+        return text;
+    }
+
+    getChartText = (arr1, arr2) => {
+        if (this.state.itemAdded === false) {
+            let text = arr1.map((item) => item.text);
+            console.log(text)
+            return text;
+        } else {
+            let text = arr2.map((item) => item.text);
+            console.log(text)
+            return text;
+            // console.log(this.state.newItemAdded)
+            // let text = func.map((item) => item.text);
+            // console.log(text)
+            // return text;
+            // let text = this.addNewExpenseOne(id).map((item) => item.text)
+            // console.log(text);
+            // return text;
+        }
+
+    }
+
+
+
+
+
     render() {
         return (
             <ExpenseContext.Provider value={{
@@ -262,6 +364,7 @@ class ExpenseProvider extends Component {
                 onEditSave: this.onEditSave,
                 removeExtra: this.removeExtra
 
+
             }}>
                 {this.props.children}
             </ExpenseContext.Provider>
@@ -273,3 +376,5 @@ const ExpenseConsumer = ExpenseContext.Consumer;
 
 
 export { ExpenseProvider, ExpenseConsumer }
+
+//https://stackoverflow.com/questions/43638938/updating-an-object-with-setstate-in-react

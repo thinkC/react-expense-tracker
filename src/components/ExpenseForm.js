@@ -30,7 +30,7 @@ export default class ExpenseForm extends Component {
                             text: value.text,
                             amount: value.amount
                         }
-                        return <form onSubmit={(e) => { value.submitNewExpense(e, this.state) }}  >
+                        return <form onSubmit={(e) => { value.submitNewExpense(e, this.state) }} >
                             <div className="form-group">
                                 <label htmlFor="exampleInputEmail1">Text</label>
                                 <input type="text"
